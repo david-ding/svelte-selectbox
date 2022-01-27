@@ -287,7 +287,9 @@
       {#if formattedValue}
         <slot name="value" {formattedValue}>{formattedValue}</slot>
       {:else}
-        <div class="svelte-selectbox-value-placeholder">{placeholder || ""}</div>
+        <div class="svelte-selectbox-value-placeholder">
+          {placeholder || ""}
+        </div>
       {/if}
     </div>
 
@@ -306,7 +308,9 @@
   </div>
 
   {#if !!value && !disabled}
-    <div class="svelte-selectbox-clear" on:click={handleClearClick}><Cross /></div>
+    <div class="svelte-selectbox-clear" on:click={handleClearClick}>
+      <Cross />
+    </div>
   {/if}
 
   {#if showChevron}
@@ -315,23 +319,24 @@
     </div>
   {/if}
 
-  {#if showEmptyResults || filteredOptions.length}
-    <svelte:component this={expanded && Portal} {appendTo}>
-      <Dropdown
-        options={filteredOptions}
-        selectedValue={value}
-        {dropUp}
-        {itemHeightPx}
-        {maxItems}
-        {position}
-        {selectorElement}
-        {width}
-        bind:this={dropdownComponent}
-        on:select={handleSelect}
-        on:outsideClick={handleOutsideClick}
-      />
-    </svelte:component>
-  {/if}
+  <svelte:component
+    this={(showEmptyResults || filteredOptions.length) && expanded && Portal}
+    {appendTo}
+  >
+    <Dropdown
+      options={filteredOptions}
+      selectedValue={value}
+      {dropUp}
+      {itemHeightPx}
+      {maxItems}
+      {position}
+      {selectorElement}
+      {width}
+      bind:this={dropdownComponent}
+      on:select={handleSelect}
+      on:outsideClick={handleOutsideClick}
+    />
+  </svelte:component>
 </div>
 
 <style>

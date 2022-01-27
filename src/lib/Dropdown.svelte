@@ -173,7 +173,7 @@
             "svelte-selectbox-dropdown-item",
             { highlighted: highlightedIndex === i },
           ])}
-          on:click={() => handleOptionClick(option)}
+          on:click|stopPropagation={() => handleOptionClick(option)}
           role="option"
           style={itemStyle}
         >
