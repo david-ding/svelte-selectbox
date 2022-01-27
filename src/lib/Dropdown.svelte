@@ -4,7 +4,6 @@
     contentBoxHeightToBorderBoxHeight,
     scrollToItem,
   } from "./_utils/dom-utils";
-  import mergeClassNames from "./_utils/merge-class-names";
 
   import type { Position, SelectOption } from "./types";
 
@@ -152,7 +151,8 @@
 
 <div
   bind:this={dropdownElement}
-  class={mergeClassNames(["svelte-selectbox-dropdown", { "drop-up": dropUp }])}
+  class="svelte-selectbox-dropdown"
+  class:drop-up={dropUp}
   role="listbox"
   style={dropdownStyle}
 >
@@ -169,10 +169,8 @@
       {:else}
         <!-- svelte-ignore a11y-mouse-events-have-key-events -->
         <div
-          class={mergeClassNames([
-            "svelte-selectbox-dropdown-item",
-            { highlighted: highlightedIndex === i },
-          ])}
+          class="svelte-selectbox-dropdown-item"
+          class:highlighted={highlightedIndex === i}
           on:click|stopPropagation={() => handleOptionClick(option)}
           role="option"
           style={itemStyle}

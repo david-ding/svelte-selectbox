@@ -1,7 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher, onDestroy, onMount, tick } from "svelte";
   import { convertLengthToPx } from "./_utils/dom-utils";
-  import mergeClassNames from "./_utils/merge-class-names";
   import stringUtils from "./_utils/string-utils";
   import Chevron from "./Chevron.svelte";
   import Cross from "./Cross.svelte";
@@ -272,18 +271,19 @@
 />
 
 <div
-  class={mergeClassNames([
-    "svelte-selectbox",
-    { disabled },
-    { expanded },
-    { focused },
-    { "drop-up": dropUp },
-  ])}
+  class="svelte-selectbox"
+  class:disabled={disabled}
+  class:expanded={expanded}
+  class:focused={focused}
+  class:drop-up={dropUp}
   bind:this={selectorElement}
   on:click={handleSelectorClick}
 >
   <div class="svelte-selectbox-value-wrapper" data-testid="selector">
-    <div class={mergeClassNames(["svelte-selectbox-value", { searching }])}>
+    <div
+      class="svelte-selectbox-value"
+      class:searching={searching}
+    >
       {#if formattedValue}
         <slot name="value" {formattedValue}>{formattedValue}</slot>
       {:else}
