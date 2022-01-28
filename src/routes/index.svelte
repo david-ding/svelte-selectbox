@@ -34,7 +34,9 @@
 
 <div>
   <h2>Dropdown Menu Direction</h2>
+  <h3>Upwards</h3>
   <Select {options} placeholder="Select..." direction="up" />
+  <h3>Downwards</h3>
   <Select {options} placeholder="Select..." direction="down" />
 </div>
 
@@ -67,4 +69,14 @@
     --dropdownBoxShadow="none"
     --dropdownItemBorderTop="1px solid #fafafa"
   />
+</div>
+
+<div>
+  <h2>Custom Icons</h2>
+  <Select {options}>
+    <div slot="clearIcon" style="margin-right: 0.5rem">❌</div>
+    <div slot="chevronIcon" let:expanded>
+      {expanded ? "🔺" : "🔻"}
+    </div>
+  </Select>
 </div>

@@ -4,7 +4,7 @@
   import stringUtils from "./_utils/string-utils";
   import Chevron from "./Chevron.svelte";
   import Cross from "./Cross.svelte";
-  import Dropdown from "./Dropdown.svelte";
+  import Dropdown, { DROPDOWN_CSS_CUSTOM_PROPERTIES } from "./Dropdown.svelte";
   import Portal from "./Portal.svelte";
 
   import type { DropdownDirection, Position, SelectOption } from "./types";
@@ -28,6 +28,7 @@
   let container: HTMLElement = null;
   let dropUp: boolean = false;
   let dropdownComponent: Dropdown = null;
+  let dropdownCssCustomProperties: string = null;
   let expanded: boolean = false;
   let filteredOptions: Array<SelectOption> = [];
   let focused: boolean = false;
@@ -163,6 +164,27 @@
     );
   };
 
+  const _setDropdownCssCustomProperties = () => {
+    if (!appendTo) {
+      return;
+    }
+
+    // Yuck...
+    // all these to make sure the css custom properties are passed to the dropdown
+    // when it's appended to another container.
+    // there is also a limitation - it won't react to dynamic css custom properties
+    dropdownCssCustomProperties = [
+      "display: contents",
+      ...DROPDOWN_CSS_CUSTOM_PROPERTIES.map((property) => {
+        const propertyValue =
+          getComputedStyle(selectorElement).getPropertyValue(property);
+        return propertyValue && `${property}: ${propertyValue}`;
+      }),
+    ]
+      .filter(Boolean)
+      .join("; ");
+  };
+
   const _resetInput = () => {
     if (inputElement != null) {
       searching = false;
@@ -211,17 +233,22 @@
       }
     }
 
-    const selectorTop = appendTo
-      ? selectorRect.top
-      : -1 *
-        parseFloat(getComputedStyle(selectorElement).borderTopWidth || "0");
-    const selectorBottom = appendTo
-      ? document.documentElement.clientHeight - selectorRect.bottom
-      : -1 *
-        parseFloat(getComputedStyle(selectorElement).borderTopWidth || "0");
+    const parentElement = appendTo
+      ? document.querySelector(appendTo)
+      : selectorElement;
+    const parentRect = parentElement.getBoundingClientRect();
     if (dropUp) {
+      const selectorBottom =
+        parentRect.bottom -
+        selectorRect.bottom -
+        parseFloat(getComputedStyle(selectorElement).borderTopWidth || "0");
       return { bottom: selectorBottom + selectorRect.height + yOffsetPx };
     }
+
+    const selectorTop =
+      selectorRect.top -
+      parentRect.top -
+      parseFloat(getComputedStyle(selectorElement).borderTopWidth || "0");
     return { top: selectorTop + selectorRect.height + yOffsetPx };
   };
 
@@ -259,6 +286,7 @@
   onMount(() => {
     _resetWidth();
     container = appendTo ? document.querySelector(appendTo) : selectorElement;
+    _setDropdownCssCustomProperties();
   });
 
   onDestroy(_detachDropdown);
@@ -272,18 +300,15 @@
 
 <div
   class="svelte-selectbox"
-  class:disabled={disabled}
-  class:expanded={expanded}
-  class:focused={focused}
+  class:disabled
+  class:expanded
+  class:focused
   class:drop-up={dropUp}
   bind:this={selectorElement}
   on:click={handleSelectorClick}
 >
   <div class="svelte-selectbox-value-wrapper" data-testid="selector">
-    <div
-      class="svelte-selectbox-value"
-      class:searching={searching}
-    >
+    <div class="svelte-selectbox-value" class:searching>
       {#if formattedValue}
         <slot name="value" {formattedValue}>{formattedValue}</slot>
       {:else}
@@ -309,13 +334,15 @@
 
   {#if !!value && !disabled}
     <div class="svelte-selectbox-clear" on:click={handleClearClick}>
-      <Cross />
+      <slot name="clearIcon"><Cross /></slot>
     </div>
   {/if}
 
   {#if showChevron}
     <div class="svelte-selectbox-arrow">
-      <Chevron direction={expanded ? "up" : "down"} />
+      <slot name="chevronIcon" {expanded}>
+        <Chevron direction={expanded ? "up" : "down"} />
+      </slot>
     </div>
   {/if}
 
@@ -323,19 +350,21 @@
     this={(showEmptyResults || filteredOptions.length) && expanded && Portal}
     {appendTo}
   >
-    <Dropdown
-      options={filteredOptions}
-      selectedValue={value}
-      {dropUp}
-      {itemHeightPx}
-      {maxItems}
-      {position}
-      {selectorElement}
-      {width}
-      bind:this={dropdownComponent}
-      on:select={handleSelect}
-      on:outsideClick={handleOutsideClick}
-    />
+    <div style={appendTo && dropdownCssCustomProperties}>
+      <Dropdown
+        options={filteredOptions}
+        selectedValue={value}
+        {dropUp}
+        {itemHeightPx}
+        {maxItems}
+        {position}
+        {selectorElement}
+        {width}
+        bind:this={dropdownComponent}
+        on:select={handleSelect}
+        on:outsideClick={handleOutsideClick}
+      />
+    </div>
   </svelte:component>
 </div>
 

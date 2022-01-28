@@ -1,3 +1,25 @@
+<script lang="ts" context="module">
+  export const DROPDOWN_CSS_CUSTOM_PROPERTIES = [
+    "--borderRadius",
+    "--dropdownBackgroundColor",
+    "--dropdownBorderColor",
+    "--dropdownBorderRadius",
+    "--dropdownBorderRadiusDropUp",
+    "--dropdownBorderWidth",
+    "--dropdownBorderWidthDropUp",
+    "--dropdownBoxShadow",
+    "--dropdownFontSize",
+    "--dropdownItemBackgroundColorHighlighted",
+    "--dropdownItemBackgroundColorHover",
+    "--dropdownItemBorderTop",
+    "--dropdownItemColorHighlighted",
+    "--dropdownItemColorHover",
+    "--dropdownItemDisabledColor",
+    "--dropdownZIndex",
+    "--fontSize",
+  ];
+</script>
+
 <script lang="ts">
   import { createEventDispatcher, onMount, tick } from "svelte";
   import {
