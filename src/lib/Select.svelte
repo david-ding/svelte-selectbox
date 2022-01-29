@@ -12,9 +12,11 @@
   export let appendTo: string = null;
   export let direction: DropdownDirection = "auto";
   export let disabled: boolean = false;
+  export let dropdownHeight: string = null;
   export let htmlId: string = null;
   export let itemHeight: string = "3rem";
   export let maxItems: number = 5;
+  export let optionKeyFn: (option: SelectOption) => unknown = (option) => option.label;
   export let options: Array<SelectOption> = [];
   export let placeholder: string = null;
   export let searchFn: (query: string) => void = null;
@@ -29,6 +31,7 @@
   let dropUp: boolean = false;
   let dropdownComponent: Dropdown = null;
   let dropdownCssCustomProperties: string = null;
+  let dropdownHeightPx: number = 0;
   let expanded: boolean = false;
   let filteredOptions: Array<SelectOption> = [];
   let focused: boolean = false;
@@ -42,6 +45,8 @@
 
   $: filteredOptions = options;
   $: formattedValue = formatValue(value);
+  $: dropdownHeightPx =
+    selectorElement && convertLengthToPx(dropdownHeight, selectorElement);
   $: itemHeightPx =
     selectorElement && convertLengthToPx(itemHeight, selectorElement);
   $: toggleDropdown(expanded);
@@ -354,9 +359,11 @@
       <Dropdown
         options={filteredOptions}
         selectedValue={value}
+        {dropdownHeightPx}
         {dropUp}
         {itemHeightPx}
         {maxItems}
+        {optionKeyFn}
         {position}
         {selectorElement}
         {width}

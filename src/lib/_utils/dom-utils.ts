@@ -55,7 +55,7 @@ const convertEmToPx = (em: number, element: HTMLElement): number => {
 
 export const convertLengthToPx = (
   length: string,
-  element?: HTMLElement,
+  parent?: HTMLElement,
 ): number => {
   if (!length) return 0;
 
@@ -70,7 +70,7 @@ export const convertLengthToPx = (
       return convertRemToPx(parseFloat(value));
     }
     case "em": {
-      return convertEmToPx(parseFloat(value), element);
+      return convertEmToPx(parseFloat(value), parent);
     }
     case "px": {
       return parseFloat(value);

@@ -30,8 +30,10 @@
   import type { Position, SelectOption } from "./types";
 
   export let dropUp: boolean = false;
+  export let dropdownHeightPx: number; // takes precedence over maxItems+itemHeightPx
   export let itemHeightPx: number;
   export let maxItems: number;
+  export let optionKeyFn: (option: SelectOption) => unknown;
   export let options: Array<SelectOption>;
   export let position: Position;
   export let selectorElement: HTMLElement;
@@ -46,10 +48,12 @@
   let highlightedIndex: number = 0;
   $: {
     if (dropdownScrollArea) {
-      height = contentBoxHeightToBorderBoxHeight(
-        dropdownScrollArea,
-        maxItems * itemHeightPx,
-      );
+      height =
+        dropdownHeightPx ||
+        contentBoxHeightToBorderBoxHeight(
+          dropdownScrollArea,
+          maxItems * itemHeightPx,
+        );
     }
   }
 
@@ -183,7 +187,7 @@
     class="svelte-selectbox-scroll-area"
     style={dropdownScrollAreaStyle}
   >
-    {#each options as option, i (option.label)}
+    {#each options as option, i (optionKeyFn(option))}
       {#if option.disabled}
         <div class="svelte-selectbox-dropdown-item disabled" style={itemStyle}>
           <slot name="item-disabled">{option.label}</slot>
