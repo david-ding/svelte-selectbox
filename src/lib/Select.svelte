@@ -6,6 +6,7 @@
   import Cross from "./Cross.svelte";
   import Dropdown, { DROPDOWN_CSS_CUSTOM_PROPERTIES } from "./Dropdown.svelte";
   import Portal from "./Portal.svelte";
+  import Wrapper from "./Wrapper.svelte";
 
   import type { DropdownDirection, Position, SelectOption } from "./types";
 
@@ -16,7 +17,8 @@
   export let htmlId: string = null;
   export let itemHeight: string = "3rem";
   export let maxItems: number = 5;
-  export let optionKeyFn: (option: SelectOption) => unknown = (option) => option.label;
+  export let optionKeyFn: (option: SelectOption) => unknown = (option) =>
+    option.label;
   export let options: Array<SelectOption> = [];
   export let placeholder: string = null;
   export let searchFn: (query: string) => void = null;
@@ -30,7 +32,6 @@
   let container: HTMLElement = null;
   let dropUp: boolean = false;
   let dropdownComponent: Dropdown = null;
-  let dropdownCssCustomProperties: string = null;
   let dropdownHeightPx: number = 0;
   let expanded: boolean = false;
   let filteredOptions: Array<SelectOption> = [];
@@ -169,25 +170,28 @@
     );
   };
 
-  const _setDropdownCssCustomProperties = () => {
-    if (!appendTo) {
-      return;
+  const getDropdownWrapperStyle = () => {
+    if (!appendTo || !selectorElement) {
+      return null;
     }
 
     // Yuck...
     // all these to make sure the css custom properties are passed to the dropdown
     // when it's appended to another container.
-    // there is also a limitation - it won't react to dynamic css custom properties
-    dropdownCssCustomProperties = [
-      "display: contents",
-      ...DROPDOWN_CSS_CUSTOM_PROPERTIES.map((property) => {
-        const propertyValue =
-          getComputedStyle(selectorElement).getPropertyValue(property);
+    // there may be a better way...
+    const selectorStyle = getComputedStyle(selectorElement);
+    const dropdownCssCustomProperties = DROPDOWN_CSS_CUSTOM_PROPERTIES.map(
+      (property) => {
+        const propertyValue = selectorStyle.getPropertyValue(property);
         return propertyValue && `${property}: ${propertyValue}`;
-      }),
-    ]
-      .filter(Boolean)
-      .join("; ");
+      },
+    ).filter(Boolean);
+
+    if (!dropdownCssCustomProperties.length) {
+      return null;
+    }
+
+    return ["display: contents", ...dropdownCssCustomProperties].join("; ");
   };
 
   const _resetInput = () => {
@@ -291,7 +295,6 @@
   onMount(() => {
     _resetWidth();
     container = appendTo ? document.querySelector(appendTo) : selectorElement;
-    _setDropdownCssCustomProperties();
   });
 
   onDestroy(_detachDropdown);
@@ -355,7 +358,7 @@
     this={(showEmptyResults || filteredOptions.length) && expanded && Portal}
     {appendTo}
   >
-    <div style={appendTo && dropdownCssCustomProperties}>
+    <Wrapper style={getDropdownWrapperStyle}>
       <Dropdown
         options={filteredOptions}
         selectedValue={value}
@@ -371,7 +374,7 @@
         on:select={handleSelect}
         on:outsideClick={handleOutsideClick}
       />
-    </div>
+    </Wrapper>
   </svelte:component>
 </div>
 
