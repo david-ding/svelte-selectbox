@@ -14,9 +14,9 @@
 
 <style>
   svg {
-    height: var(--chevronHeight, 1rem);
-    width: var(--chevronWidth, 1rem);
-    margin: var(--chevronMargin, 0 0.25rem);
+    height: var(--chevron-height, 1rem);
+    width: var(--chevron-width, 1rem);
+    margin: var(--chevron-margin, 0 0.25rem);
   }
   .up {
     transform: rotate(180deg);

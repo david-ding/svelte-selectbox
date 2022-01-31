@@ -4,8 +4,8 @@
 
 <style>
   svg {
-    height: var(--crossHeight, 1rem);
-    width: var(--crossWidth, 1rem);
-    margin: var(--crossMargin, 0 0.25rem);
+    height: var(--cross-height, 1rem);
+    width: var(--cross-width, 1rem);
+    margin: var(--cross-margin, 0 0.25rem);
   }
 </style>

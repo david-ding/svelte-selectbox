@@ -1,22 +1,22 @@
 <script lang="ts" context="module">
   export const DROPDOWN_CSS_CUSTOM_PROPERTIES = [
-    "--borderRadius",
-    "--dropdownBackgroundColor",
-    "--dropdownBorderColor",
-    "--dropdownBorderRadius",
-    "--dropdownBorderRadiusDropUp",
-    "--dropdownBorderWidth",
-    "--dropdownBorderWidthDropUp",
-    "--dropdownBoxShadow",
-    "--dropdownFontSize",
-    "--dropdownItemBackgroundColorHighlighted",
-    "--dropdownItemBackgroundColorHover",
-    "--dropdownItemBorderTop",
-    "--dropdownItemColorHighlighted",
-    "--dropdownItemColorHover",
-    "--dropdownItemDisabledColor",
-    "--dropdownZIndex",
-    "--fontSize",
+    "--border-radius",
+    "--dropdown-background-color",
+    "--dropdown-border-color",
+    "--dropdown-border-radius",
+    "--dropdown-border-radius-up",
+    "--dropdown-border-width",
+    "--dropdown-border-width-up",
+    "--dropdown-box-shadow",
+    "--dropdown-font-size",
+    "--dropdown-item-background-highlighted",
+    "--dropdown-item-background-hover",
+    "--dropdown-item-border-top",
+    "--dropdown-item-color-highlighted",
+    "--dropdown-item-color-hover",
+    "--dropdown-item-disabled-color",
+    "--dropdown-z-index",
+    "--font-size",
   ];
 </script>
 
@@ -217,57 +217,56 @@
 <style>
   .svelte-selectbox-dropdown {
     position: absolute;
-    border-color: var(--dropdownBorderColor, #d1d5db); /* blue-400 */
+    border-color: var(--dropdown-border-color, #d1d5db); /* blue-400 */
     border-style: solid;
-    border-width: var(--dropdownBorderWidth, 1px);
-    border-radius: var(--dropdownBorderRadius, var(--borderRadius, 4px));
+    border-width: var(--dropdown-border-width, 1px);
+    border-radius: var(--dropdown-border-radius, var(--border-radius, 4px));
     overflow: hidden;
-    z-index: var(--dropdownZIndex, 2);
-    background-color: var(--dropdownBackgroundColor, #ffffff);
-    box-shadow: var(--dropdownBoxShadow, 0 2px 3px 0 #d1d5db);
+    z-index: var(--dropdown-z-index, 2);
+    background-color: var(--dropdown-background-color, #ffffff);
+    box-shadow: var(--dropdown-box-shadow, 0 2px 3px 0 #d1d5db);
     box-sizing: border-box;
-    /* box-shadow: 0 2px 3px 0 rgb(34 36 38 / 15%); */
   }
   .svelte-selectbox-dropdown * {
     box-sizing: border-box;
   }
   .svelte-selectbox-dropdown.drop-up {
     border-width: var(
-      --dropdownBorderWidthDropUp,
-      var(--dropdownBorderWidth, 1px)
+      --dropdown-border-width-up,
+      var(--dropdown-border-width, 1px)
     );
     border-radius: var(
-      --dropdownBorderRadiusDropUp,
-      var(--dropdownBorderRadius, 4px)
+      --dropdown-border-radius-up,
+      var(--dropdown-border-radius, 4px)
     );
   }
   .svelte-selectbox-dropdown-item {
     padding: 0 0.5rem 0 1rem;
     display: flex;
-    font-size: var(--dropdownFontSize, var(--fontSize, 1rem));
+    font-size: var(--dropdown-font-size, var(--font-size, 1rem));
     align-items: center;
     cursor: pointer;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    border-top: var(--dropdownItemBorderTop, 0);
+    border-top: var(--dropdown-item-border-top, 0);
   }
   .svelte-selectbox-dropdown-item.disabled {
-    color: var(--dropdownItemDisabledColor, #d1d5db); /* gray-300 */
+    color: var(--dropdown-item-disabled-color, #d1d5db); /* gray-300 */
     cursor: default;
   }
   .svelte-selectbox-dropdown-item.highlighted,
   .svelte-selectbox-dropdown-item.highlighted:hover {
-    color: var(--dropdownItemColorHighlighted, white);
+    color: var(--dropdown-item-color-highlighted, white);
     background-color: var(
-      --dropdownItemBackgroundColorHighlighted,
+      --dropdown-item-background-highlighted,
       #1d4ed8
     ); /* blue-700 */
   }
   .svelte-selectbox-dropdown-item:not(.disabled):not(.highlighted):hover {
-    color: var(--dropdownItemColorHover, currentColor);
+    color: var(--dropdown-item-color-hover, currentColor);
     background-color: var(
-      --dropdownItemBackgroundColorHover,
+      --dropdown-item-background-hover,
       #dbeafe
     ); /* blue-100 */
   }

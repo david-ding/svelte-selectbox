@@ -380,48 +380,48 @@
 
 <style>
   .svelte-selectbox {
-    background-color: var(--backgroundColor, #ffffff);
+    background-color: var(--background-color, #ffffff);
     border: var(--border, 1px solid #d1d5db); /* gray-300 */
-    border-radius: var(--borderRadius, 4px);
-    box-shadow: var(--boxShadow, none);
+    border-radius: var(--border-radius, 4px);
+    box-shadow: var(--box-shadow, none);
     box-sizing: border-box;
     cursor: var(--cursor, default);
     display: flex;
-    font-size: var(--fontSize, 1rem);
+    font-size: var(--font-size, 1rem);
     align-items: center;
-    line-height: var(--lineHeight, 2.5rem);
+    line-height: var(--line-height, 2.5rem);
     padding: var(--padding, 0 0.5rem 0 1rem);
     text-overflow: ellipsis;
     white-space: nowrap;
     position: relative;
   }
   .svelte-selectbox:not(.disabled):not(.focused):hover {
-    border: var(--borderHover, 1px solid #9ca3af); /* gray-400 */
-    box-shadow: var(--boxShadowHover, none);
+    border: var(--border-hover, 1px solid #9ca3af); /* gray-400 */
+    box-shadow: var(--box-shadow-hover, none);
   }
   .svelte-selectbox.focused {
-    border: var(--borderFocused, 1px solid #60a5fa); /* blue-400 */
-    box-shadow: var(--boxShadowFocused, 0 0 4px 0 #60a5fa);
+    border: var(--border-focused, 1px solid #60a5fa); /* blue-400 */
+    box-shadow: var(--box-shadow-focused, 0 0 4px 0 #60a5fa);
   }
   .svelte-selectbox.expanded {
     border: var(
-      --borderExpanded,
-      var(--borderFocused, 1px solid #60a5fa)
+      --border-expanded,
+      var(--border-focused, 1px solid #60a5fa)
     ); /* blue-400 */
-    border-radius: var(--borderRadiusExpanded, var(--borderRadius, 4px));
+    border-radius: var(--border-radius-expanded, var(--border-radius, 4px));
     box-shadow: var(
-      --boxShadowExpanded,
-      var(--boxShadowFocused, 0 0 4px 0 #60a5fa)
+      --box-shadow-expanded,
+      var(--box-shadow-focused, 0 0 4px 0 #60a5fa)
     );
   }
   .svelte-selectbox.expanded.drop-up {
     border-radius: var(
-      --borderRadiusExpandedDropUp,
-      var(--borderRadiusExpanded, 4px)
+      --border-radius-expanded-up,
+      var(--border-radius-expanded, 4px)
     );
     box-shadow: var(
-      --boxShadowExpandedDropUp,
-      var(--boxShadowFocused, 0 0 4px 0 #60a5fa)
+      --box-shadow-expanded-up,
+      var(--box-shadow-focused, 0 0 4px 0 #60a5fa)
     );
   }
   .svelte-selectbox input {
@@ -435,7 +435,7 @@
     outline: none;
   }
   .svelte-selectbox.disabled {
-    background-color: var(--disabledBackgroundColor, #e5e7eb); /* gray-200 */
+    background-color: var(--disabled-background-color, #e5e7eb); /* gray-200 */
   }
   .svelte-selectbox-value-wrapper {
     flex: 1;
@@ -452,7 +452,7 @@
     display: none;
   }
   .svelte-selectbox-value-placeholder {
-    color: var(--placeholderColor, #d1d5db); /* gray-300 */
+    color: var(--placeholder-color, #d1d5db); /* gray-300 */
   }
   .svelte-selectbox-clear,
   .svelte-selectbox-arrow {
@@ -460,9 +460,9 @@
     display: flex;
   }
   .svelte-selectbox.disabled .svelte-selectbox-arrow {
-    color: var(--disabledSelectArrowColor, #9ca3af);
+    color: var(--disabled-select-arrow-color, #9ca3af);
   }
   .svelte-selectbox.disabled .svelte-selectbox-value {
-    color: var(--disabledSelectValueColor, #9ca3af);
+    color: var(--disabled-select-value-color, #9ca3af);
   }
 </style>
