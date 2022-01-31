@@ -1,5 +1,11 @@
 {
+  "hooks": {
+    "after:bump": "yarn package"
+  },
   "github": {
     "release": true
+  },
+  "npm": {
+    "publishPath": "./package"
   }
 }
