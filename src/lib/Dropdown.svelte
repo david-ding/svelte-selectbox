@@ -190,7 +190,7 @@
     {#each options as option, i (optionKeyFn(option))}
       {#if option.disabled}
         <div class="svelte-selectbox-dropdown-item disabled" style={itemStyle}>
-          <slot name="item-disabled">{option.label}</slot>
+          <slot name="item" {option}>{option.label}</slot>
         </div>
       {:else}
         <!-- svelte-ignore a11y-mouse-events-have-key-events -->
@@ -201,15 +201,13 @@
           role="option"
           style={itemStyle}
         >
-          <slot name="item">{option.label}</slot>
+          <slot name="item" {option}>{option.label}</slot>
         </div>
       {/if}
     {:else}
-      <slot name="no-option-placeholder">
-        <div class="svelte-selectbox-dropdown-item disabled" style={itemStyle}>
-          No options found
-        </div>
-      </slot>
+      <div class="svelte-selectbox-dropdown-item disabled" style={itemStyle}>
+        <slot name="no-option-placeholder">No options found</slot>
+      </div>
     {/each}
   </div>
 </div>

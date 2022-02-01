@@ -342,13 +342,13 @@
 
   {#if !!value && !disabled}
     <div class="svelte-selectbox-clear" on:click={handleClearClick}>
-      <slot name="clearIcon"><Cross /></slot>
+      <slot name="clear-icon"><Cross /></slot>
     </div>
   {/if}
 
   {#if showChevron}
     <div class="svelte-selectbox-arrow">
-      <slot name="chevronIcon" {expanded}>
+      <slot name="chevron-icon" {expanded}>
         <Chevron direction={expanded ? "up" : "down"} />
       </slot>
     </div>
@@ -373,11 +373,16 @@
         bind:this={dropdownComponent}
         on:select={handleSelect}
         on:outsideClick={handleOutsideClick}
-      />
+        let:option
+      >
+        <!-- temporary workaround to redefine defaults for forwarded slots
+        https://github.com/sveltejs/svelte/issues/5604 -->
+        <slot name="item" slot="item" {option}>{option.label}</slot>
+        <slot name="no-option-placeholder" slot="no-option-placeholder">No options found</slot>
+      </Dropdown>
     </Wrapper>
   </svelte:component>
 </div>
-
 <style>
   .svelte-selectbox {
     background-color: var(--background-color, #ffffff);
@@ -426,6 +431,7 @@
   }
   .svelte-selectbox input {
     border: 0;
+    margin: 0;
     padding: 0;
     cursor: var(--cursor, default);
     width: 100%;

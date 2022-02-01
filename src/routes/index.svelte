@@ -74,8 +74,8 @@
 <div>
   <h2>Custom Icons</h2>
   <Select {options}>
-    <div slot="clearIcon" style="margin-right: 0.5rem">❌</div>
-    <div slot="chevronIcon" let:expanded>
+    <div slot="clear-icon" style="margin-right: 0.5rem">❌</div>
+    <div slot="chevron-icon" let:expanded>
       {expanded ? "🔺" : "🔻"}
     </div>
   </Select>
