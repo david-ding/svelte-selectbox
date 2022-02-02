@@ -129,24 +129,28 @@ Example:
 <Select
   {options}
   placeholder="Select..."
-  yOffset="-1px"
-  --border-radius="4px"
-  --border-radius-expanded="4px 4px 0 0"
-  --border-radius-expanded-up="0 0 4px 4px"
+  yOffset="-2px"
+  --border="2px solid #d8d8d8"
+  --border-hover="2px solid #d8d8d8"
+  --border-radius="8px"
+  --border-radius-expanded="8px 8px 0 0"
+  --border-radius-expanded-up="0 0 8px 8px"
   --box-shadow-focused="none"
   --box-shadow-expanded="none"
   --box-shadow-expanded-up="none"
-  --border-focused="1px solid #60a5fa"
-  --border-expanded="1px solid #60a5fa"
-  --line-height="2rem"
-  --dropdown-border-width="0 1px 1px 1px"
+  --border-focused="2px solid #60a5fa"
+  --border-expanded="2px solid #60a5fa"
+  --color="#6B7280"
+  --line-height="2.5rem"
+  --dropdown-border-width="0 2px 2px 2px"
   --dropdown-border-color="#60a5fa"
-  --dropdown-border-radius="0 0 4px 4px"
-  --dropdown-border-width-up="1px 1px 0 1px"
-  --dropdown-border-radius-up="4px 4px 0 0"
-  --dropdown-item-color-highlighted="inherit"
+  --dropdown-border-radius="0 0 8px 8px"
+  --dropdown-border-width-up="2px 2px 0 2px"
+  --dropdown-border-radius-up="8px 8px 0 0"
+  --dropdown-item-color="#6B7280"
+  --dropdown-item-color-hover="#6B7280"
   --dropdown-box-shadow="none"
-  --dropdown-item-border-top="1px solid #fafafa"
+  --dropdown-item-border="1px solid #fafafa"
 />
 ```
 
@@ -158,13 +162,13 @@ A list of exposed CSS variables are:
 - --border-focused
 - --border-hover
 - --border-radius
-- --border-radius
 - --border-radius-expanded
 - --border-radius-expanded-up
 - --box-shadow
 - --box-shadow-expanded
 - --box-shadow-focused
 - --box-shadow-hover
+- --color
 - --cursor
 - --disabled-background-color
 - --disabled-select-arrow-color
@@ -179,12 +183,12 @@ A list of exposed CSS variables are:
 - --dropdown-font-size
 - --dropdown-item-background-highlighted
 - --dropdown-item-background-hover
-- --dropdown-item-border-top
+- --dropdown-item-border
+- --dropdown-item-color
 - --dropdown-item-color-highlighted
 - --dropdown-item-color-hover
 - --dropdown-item-disabled-color
 - --dropdown-z-index
-- --font-size
 - --font-size
 - --line-height
 - --padding

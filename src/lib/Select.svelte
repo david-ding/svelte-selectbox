@@ -341,7 +341,7 @@
   </div>
 
   {#if !!value && !disabled}
-    <div class="svelte-selectbox-clear" on:click={handleClearClick}>
+    <div class="svelte-selectbox-clear" on:click|stopPropagation={handleClearClick}>
       <slot name="clear-icon"><Cross /></slot>
     </div>
   {/if}
@@ -390,6 +390,7 @@
     border-radius: var(--border-radius, 4px);
     box-shadow: var(--box-shadow, none);
     box-sizing: border-box;
+    color: var(--color, #1F2937); /* gray-800 */
     cursor: var(--cursor, default);
     display: flex;
     font-size: var(--font-size, 1rem);
