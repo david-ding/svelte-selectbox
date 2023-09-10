@@ -1,17 +1,23 @@
 # Svelte Selectbox
+
 A simple selectbox library with custom dropdown placements. [Demos](https://svelte-selectbox.onrender.com/)
 
 # Installation
+
 npm
+
 ```
 npm i --save svelte-selectbox
 ```
+
 yarn
+
 ```
 yarn add svelte-selectbox
 ```
 
 # Usage
+
 ```javascript
 <script>
   import Select from "svelte-selectbox";
@@ -39,8 +45,9 @@ yarn add svelte-selectbox
 ```
 
 # Props
+
 | Prop               | Default                    | Description                                                                                                                                                                                                                                                         |
-|--------------------|----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------ | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `appendTo`         | `null`                     | Specify the CSS selector of the container element to attach the dropdown element.                                                                                                                                                                                   |
 | `direction`        | "auto"                     | Specify which direction should the dropdown open. Valid values are "auto", "up" or "down". If "auto" is selected, then it will determine the direction based on the viewport.                                                                                       |
 | `disabled`         | `false`                    | Specify if the dropdown is disabled.                                                                                                                                                                                                                                |
@@ -60,46 +67,59 @@ yarn add svelte-selectbox
 | `yOffset`          | `1rem`                     | Specify the vertical offset between the dropdown and selector elements. "px", "rem" and "em" values are accepted.                                                                                                                                                   |
 
 # Slots
+
 ## Item
+
 Specify the item template.
 
 `option` - option object of current item
 
 Example:
+
 ```html
 <div slot="item" let:option>{ `${option.label} (${option.value})` }</div>
 ```
+
 ## Clear Icon
+
 Specify the clear icon template.
 
 Example:
+
 ```html
 <div slot="clear-icon" style="margin-right: 0.5rem">❌</div>
 ```
+
 ## Chevron Icon
+
 Specify the chevron icon template.
 
 `expanded` - whether the dropdown is expanded
 
 Example:
+
 ```html
-<div slot="chevron-icon" let:expanded>
-  {expanded ? "🔺" : "🔻"}
-</div>
+<div slot="chevron-icon" let:expanded>{expanded ? "🔺" : "🔻"}</div>
 ```
+
 ## No Option Placeholder
+
 Specify the no option placeholder template.
 
 Example:
+
 ```html
-<div slot="no-option-placeholder">Nothing to see here...</div>
+<div slot="no-options-placeholder">Nothing to see here...</div>
 ```
+
 ## Value
+
 Specify the selector value template.
 
 `formattedValue` - the formatted value with `valueFormatterFn` applied, by default this is the option label
 
 Example:
+
 ```html
 <div slot="value" let:formattedValue>
   <MyFancyComponent>{formattedValue}</MyFancyComponent>
@@ -107,9 +127,11 @@ Example:
 ```
 
 # Theming
+
 You can style the selectbox with CSS variables.
 
 Example:
+
 ```javascript
 <script>
   import Select from "svelte-selectbox";

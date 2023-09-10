@@ -151,7 +151,9 @@
   };
 
   const handleHighlight = (highlightEvent: CustomEvent<number>) => {
-    highlightedOptionId = expanded ? `${dropdownHtmlId}-${highlightEvent.detail}` : null;
+    highlightedOptionId = expanded
+      ? `${dropdownHtmlId}-${highlightEvent.detail}`
+      : null;
   };
 
   const checkAndHandleOutsideClick = (event: MouseEvent) => {
@@ -234,7 +236,7 @@
       if (direction === "auto") {
         const scrollTop =
           document.documentElement.scrollTop || document.body.scrollTop;
-        const offsetTop = selectorRect.top + window.pageYOffset + yOffsetPx;
+        const offsetTop = selectorRect.top + window.scrollY + yOffsetPx;
         const height = selectorRect.height;
         const dropdownHeight = (
           document.querySelector(".svelte-selectbox-dropdown") as HTMLElement
@@ -308,10 +310,10 @@
 
 <svelte:window
   on:mousedown={checkAndHandleOutsideClick}
-  on:keydown={handleKeydown}
   on:resize={handleWindowResize}
 />
 
+<!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
   class="svelte-selectbox"
   class:disabled
@@ -320,6 +322,7 @@
   class:drop-up={dropUp}
   bind:this={selectorElement}
   on:click={handleSelectorClick}
+  on:keydown={handleKeydown}
 >
   <div class="svelte-selectbox-value-wrapper" data-testid="selector">
     <div class="svelte-selectbox-value" class:searching>
@@ -343,7 +346,6 @@
       bind:this={inputElement}
       on:focus={handleFocus}
       on:input={handleInput}
-
       role="combobox"
       aria-autocomplete="list"
       aria-haspopup="listbox"
@@ -351,7 +353,6 @@
       aria-owns={dropdownHtmlId}
       aria-controls={dropdownHtmlId}
       aria-activedescendant={highlightedOptionId}
-
       aria-live="polite"
       aria-describedby={`${htmlId}-description`}
     />
@@ -396,12 +397,11 @@
         on:select={handleSelect}
         on:outsideClick={handleOutsideClick}
         on:highlight={handleHighlight}
-        let:option
       >
-        <!-- temporary workaround to redefine defaults for forwarded slots
-        https://github.com/sveltejs/svelte/issues/5604 -->
-        <slot name="item" slot="item" {option}>{option.label}</slot>
-        <slot name="no-option-placeholder" slot="no-option-placeholder">No options found</slot>
+        <slot name="item" slot="item" let:option {option}>{option.label}</slot>
+        <slot name="no-options-placeholder" slot="no-options-placeholder"
+          >No options found</slot
+        >
       </Dropdown>
     </Wrapper>
   </svelte:component>
@@ -414,7 +414,7 @@
     border-radius: var(--border-radius, 4px);
     box-shadow: var(--box-shadow, none);
     box-sizing: border-box;
-    color: var(--color, #1F2937); /* gray-800 */
+    color: var(--color, #1f2937); /* gray-800 */
     cursor: var(--cursor, default);
     display: flex;
     font-size: var(--font-size, 1rem);

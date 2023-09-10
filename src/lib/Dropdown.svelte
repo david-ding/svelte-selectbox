@@ -196,27 +196,29 @@
     {#each options as option, i (optionKeyFn(option))}
       {#if option.disabled}
         <div class="svelte-selectbox-dropdown-item disabled" style={itemStyle}>
-          <slot name="item" {option}>{option.label}</slot>
+          <slot name="item" {option} />
         </div>
       {:else}
-        <!-- svelte-ignore a11y-mouse-events-have-key-events -->
+        <!-- svelte-ignore a11y-mouse-events-have-key-events a11y-click-events-have-key-events -->
         <div
           class="svelte-selectbox-dropdown-item"
           class:highlighted={highlightedIndex === i}
           class:selected={selectedIndex === i}
           id={`${htmlId}-${i}`}
           on:click|stopPropagation={() => handleOptionClick(option)}
+          on:focus={() => highlightOption(i)}
           on:mouseover={() => highlightOption(i)}
           role="option"
           style={itemStyle}
+          tabindex={0}
           aria-selected={selectedIndex === i}
         >
-          <slot name="item" {option}>{option.label}</slot>
+          <slot name="item" {option} />
         </div>
       {/if}
     {:else}
       <div class="svelte-selectbox-dropdown-item disabled" style={itemStyle}>
-        <slot name="no-option-placeholder">No options found</slot>
+        <slot name="no-options-placeholder" />
       </div>
     {/each}
   </div>

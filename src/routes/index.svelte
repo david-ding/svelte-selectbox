@@ -76,11 +76,32 @@
 </div>
 
 <div>
+  <h2>Custom Item template</h2>
+  <Select {options}>
+    <svelte:fragment slot="item" let:option>
+      🔭 {option.label}
+    </svelte:fragment>
+  </Select>
+</div>
+
+<div>
   <h2>Custom Icons</h2>
   <Select {options}>
     <div slot="clear-icon" style="margin-right: 0.5rem">❌</div>
     <div slot="chevron-icon" let:expanded>
       {expanded ? "🔺" : "🔻"}
     </div>
+  </Select>
+</div>
+
+<div>
+  <h2>No options</h2>
+  <Select options={[]} />
+</div>
+
+<div>
+  <h2>Custom no options template</h2>
+  <Select options={[]}>
+    <div slot="no-options-placeholder">No options available</div>
   </Select>
 </div>
