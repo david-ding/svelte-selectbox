@@ -10,11 +10,9 @@
     "--dropdown-box-shadow",
     "--dropdown-font-size",
     "--dropdown-item-background-highlighted",
-    "--dropdown-item-background-hover",
     "--dropdown-item-border",
     "--dropdown-item-color",
     "--dropdown-item-color-highlighted",
-    "--dropdown-item-color-hover",
     "--dropdown-item-disabled-color",
     "--dropdown-z-index",
     "--font-size",
@@ -32,6 +30,7 @@
 
   export let dropUp: boolean = false;
   export let dropdownHeightPx: number; // takes precedence over maxItems+itemHeightPx
+  export let htmlId: string;
   export let itemHeightPx: number;
   export let maxItems: number;
   export let optionKeyFn: (option: SelectOption) => unknown;
@@ -65,10 +64,10 @@
     dropdownScrollAreaStyle = `max-height: ${height}px`;
   }
   $: itemStyle = `height: ${itemHeightPx}px`;
+  $: selectedIndex = options.findIndex(
+    (option) => option.value === selectedValue,
+  );
   $: {
-    const selectedIndex = options.findIndex(
-      (option) => option.value === selectedValue,
-    );
     highlightedIndex =
       selectedIndex === -1 ? _findNextEnabledOptionIndex(-1) : selectedIndex;
   }
@@ -99,7 +98,7 @@
   };
 
   const highlightPrevious = () => {
-    highlightedIndex = _findNextEnabledOptionIndex(highlightedIndex, true);
+    highlightOption(_findNextEnabledOptionIndex(highlightedIndex, true));
 
     scrollToItem(
       dropdownScrollArea.children[highlightedIndex] as HTMLElement,
@@ -108,13 +107,18 @@
   };
 
   const highlightNext = () => {
-    highlightedIndex = _findNextEnabledOptionIndex(highlightedIndex);
+    highlightOption(_findNextEnabledOptionIndex(highlightedIndex));
 
     scrollToItem(
       dropdownScrollArea.children[highlightedIndex] as HTMLElement,
       dropdownScrollArea,
       false,
     );
+  };
+
+  const highlightOption = (index: number) => {
+    highlightedIndex = index;
+    dispatch("highlight", index);
   };
 
   const selectHightlightedOption = () =>
@@ -165,7 +169,7 @@
   onMount(async () => {
     await tick();
     scrollToItem(
-      dropdownScrollArea.children[highlightedIndex] as HTMLElement,
+      dropdownScrollArea.children[selectedIndex] as HTMLElement,
       dropdownScrollArea,
     );
   });
@@ -180,6 +184,7 @@
   bind:this={dropdownElement}
   class="svelte-selectbox-dropdown"
   class:drop-up={dropUp}
+  id={htmlId}
   role="listbox"
   style={dropdownStyle}
 >
@@ -198,9 +203,13 @@
         <div
           class="svelte-selectbox-dropdown-item"
           class:highlighted={highlightedIndex === i}
+          class:selected={selectedIndex === i}
+          id={`${htmlId}-${i}`}
           on:click|stopPropagation={() => handleOptionClick(option)}
+          on:mouseover={() => highlightOption(i)}
           role="option"
           style={itemStyle}
+          aria-selected={selectedIndex === i}
         >
           <slot name="item" {option}>{option.label}</slot>
         </div>
@@ -248,7 +257,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    color: var(--dropdown-item-color, #1F2937); /* gray-800 */
+    color: var(--dropdown-item-color, #1f2937); /* gray-800 */
     border-top: var(--dropdown-item-border, 0);
   }
   .drop-up .svelte-selectbox-dropdown-item {
@@ -259,20 +268,19 @@
     color: var(--dropdown-item-disabled-color, #d1d5db); /* gray-300 */
     cursor: default;
   }
-  .svelte-selectbox-dropdown-item.highlighted,
-  .svelte-selectbox-dropdown-item.highlighted:hover {
-    color: var(--dropdown-item-color-highlighted, white);
+  .svelte-selectbox-dropdown-item.selected {
+    color: var(--dropdown-item-color-selected, white);
     background-color: var(
-      --dropdown-item-background-highlighted,
+      --dropdown-item-background-selected,
       #1d4ed8
     ); /* blue-700 */
   }
-  .svelte-selectbox-dropdown-item:not(.disabled):not(.highlighted):hover {
-    color: var(--dropdown-item-color-hover, currentColor);
+  .svelte-selectbox-dropdown-item.highlighted:not(.selected) {
+    color: var(--dropdown-item-color-highlighted, #1f2937); /* gray-800 */
     background-color: var(
-      --dropdown-item-background-hover,
-      #dbeafe
-    ); /* blue-100 */
+      --dropdown-item-background-highlighted,
+      #bfdbfe
+    ); /* blue-200 */
   }
   .svelte-selectbox-scroll-area {
     overflow-y: auto;

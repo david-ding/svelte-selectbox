@@ -99,3 +99,7 @@ export const contentBoxHeightToBorderBoxHeight = (
     parseFloat(paddingBottom || "0")
   );
 };
+
+export const generateHtmlId = (): string => {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2);
+};

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher, onDestroy, onMount, tick } from "svelte";
-  import { convertLengthToPx } from "./_utils/dom-utils";
+  import { convertLengthToPx, generateHtmlId } from "./_utils/dom-utils";
   import stringUtils from "./_utils/string-utils";
   import Chevron from "./Chevron.svelte";
   import Cross from "./Cross.svelte";
@@ -14,7 +14,7 @@
   export let direction: DropdownDirection = "auto";
   export let disabled: boolean = false;
   export let dropdownHeight: string = null;
-  export let htmlId: string = null;
+  export let htmlId: string = generateHtmlId();
   export let itemHeight: string = "3rem";
   export let maxItems: number = 5;
   export let optionKeyFn: (option: SelectOption) => unknown = (option) =>
@@ -33,10 +33,12 @@
   let dropUp: boolean = false;
   let dropdownComponent: Dropdown = null;
   let dropdownHeightPx: number = 0;
+  let dropdownHtmlId: string = generateHtmlId();
   let expanded: boolean = false;
   let filteredOptions: Array<SelectOption> = [];
   let focused: boolean = false;
   let formattedValue: string = null;
+  let highlightedOptionId: string = null;
   let inputElement: HTMLInputElement = null;
   let itemHeightPx: number = 0;
   let position: Position = { left: -99999, top: -99999 };
@@ -146,6 +148,10 @@
 
   const handleOutsideClick = () => {
     _resetSelect();
+  };
+
+  const handleHighlight = (highlightEvent: CustomEvent<number>) => {
+    highlightedOptionId = expanded ? `${dropdownHtmlId}-${highlightEvent.detail}` : null;
   };
 
   const checkAndHandleOutsideClick = (event: MouseEvent) => {
@@ -337,17 +343,32 @@
       bind:this={inputElement}
       on:focus={handleFocus}
       on:input={handleInput}
+
+      role="combobox"
+      aria-autocomplete="list"
+      aria-haspopup="listbox"
+      aria-expanded={expanded}
+      aria-owns={dropdownHtmlId}
+      aria-controls={dropdownHtmlId}
+      aria-activedescendant={highlightedOptionId}
+
+      aria-live="polite"
+      aria-describedby={`${htmlId}-description`}
     />
   </div>
 
   {#if !!value && !disabled}
-    <div class="svelte-selectbox-clear" on:click|stopPropagation={handleClearClick}>
+    <div
+      class="svelte-selectbox-clear"
+      on:click|stopPropagation={handleClearClick}
+      aria-hidden="true"
+    >
       <slot name="clear-icon"><Cross /></slot>
     </div>
   {/if}
 
   {#if showChevron}
-    <div class="svelte-selectbox-arrow">
+    <div class="svelte-selectbox-arrow" aria-hidden="true">
       <slot name="chevron-icon" {expanded}>
         <Chevron direction={expanded ? "up" : "down"} />
       </slot>
@@ -364,6 +385,7 @@
         selectedValue={value}
         {dropdownHeightPx}
         {dropUp}
+        htmlId={dropdownHtmlId}
         {itemHeightPx}
         {maxItems}
         {optionKeyFn}
@@ -373,6 +395,7 @@
         bind:this={dropdownComponent}
         on:select={handleSelect}
         on:outsideClick={handleOutsideClick}
+        on:highlight={handleHighlight}
         let:option
       >
         <!-- temporary workaround to redefine defaults for forwarded slots
@@ -383,6 +406,7 @@
     </Wrapper>
   </svelte:component>
 </div>
+
 <style>
   .svelte-selectbox {
     background-color: var(--background-color, #ffffff);
