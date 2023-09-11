@@ -25,7 +25,7 @@
   export let searchable: boolean = false;
   export let showChevron: boolean = true;
   export let showEmptyResults: boolean = true;
-  export let value: unknown = null;
+  export let value: unknown = undefined;
   export let valueFormatterFn: (value: unknown) => string = null;
   export let yOffset: string = "1rem";
 
@@ -37,7 +37,7 @@
   let expanded: boolean = false;
   let filteredOptions: Array<SelectOption> = [];
   let focused: boolean = false;
-  let formattedValue: string = null;
+  let formattedValue: string = "";
   let highlightedOptionId: string = null;
   let inputElement: HTMLInputElement = null;
   let itemHeightPx: number = 0;
@@ -174,7 +174,8 @@
     }
     return (
       options.find((option) => option.value === value)?.label ||
-      value?.toString()
+      value?.toString() ||
+      ""
     );
   };
 
@@ -205,14 +206,14 @@
   const _resetInput = () => {
     if (inputElement != null) {
       searching = false;
-      inputElement.value = null;
+      inputElement.value = "";
 
       filteredOptions = options;
     }
   };
 
   const _clearResults = () => {
-    value = null;
+    value = undefined;
     _resetInput();
 
     dispatch("clear");
@@ -339,6 +340,7 @@
       autocorrect="off"
       autocapitalize="off"
       autocomplete="off"
+      class="svelte-selectbox-input"
       data-testid="inputElement"
       {disabled}
       id={htmlId}
@@ -425,9 +427,22 @@
     white-space: nowrap;
     position: relative;
   }
+  .svelte-selectbox-input {
+    background-color: var(--background-color, #ffffff);
+  }
   .svelte-selectbox:not(.disabled):not(.focused):hover {
+    background-color: var(
+      --background-color-hover,
+      var(--background-color, #ffffff)
+    );
     border: var(--border-hover, 1px solid #9ca3af); /* gray-400 */
     box-shadow: var(--box-shadow-hover, none);
+  }
+  .svelte-selectbox:not(.disabled):not(.focused):hover .svelte-selectbox-input {
+    background-color: var(
+      --background-color-hover,
+      var(--background-color, #ffffff)
+    );
   }
   .svelte-selectbox.focused {
     border: var(--border-focused, 1px solid #60a5fa); /* blue-400 */
@@ -465,7 +480,8 @@
   .svelte-selectbox input:focus {
     outline: none;
   }
-  .svelte-selectbox.disabled {
+  .svelte-selectbox.disabled,
+  .svelte-selectbox.disabled .svelte-selectbox-input {
     background-color: var(--disabled-background-color, #e5e7eb); /* gray-200 */
   }
   .svelte-selectbox-value-wrapper {
