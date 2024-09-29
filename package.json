@@ -1,7 +1,7 @@
 {
   "name": "svelte-selectbox",
   "author": "David Ding <david.ding@outlook.com>",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "main": "./index.js",
   "exports": {
     ".": "./index.js"
