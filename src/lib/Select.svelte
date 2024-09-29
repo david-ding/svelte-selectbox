@@ -17,6 +17,7 @@
   export let htmlId: string = generateHtmlId();
   export let itemHeight: string = "3rem";
   export let maxItems: number = 5;
+  export let name: string | null | undefined = undefined;
   export let optionKeyFn: (option: SelectOption) => unknown = (option) =>
     option.label;
   export let options: Array<SelectOption> = [];
@@ -344,6 +345,7 @@
       data-testid="inputElement"
       {disabled}
       id={htmlId}
+      {name}
       readonly={!searchable}
       bind:this={inputElement}
       on:focus={handleFocus}
