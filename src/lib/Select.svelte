@@ -456,6 +456,7 @@
     font: inherit;
   }
   .svelte-selectbox input:focus {
+    box-shadow: none;
     outline: none;
   }
   .svelte-selectbox.disabled,
