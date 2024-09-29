@@ -1,42 +1,32 @@
-module.exports = {
-  root: true,
-  extends: ["eslint:recommended", "prettier"],
-  overrides: [
-    {
-      files: ["*.svelte", "*.ts"],
-      extends: [
-        "eslint:recommended",
-        "plugin:@typescript-eslint/recommended",
-        "prettier",
-      ],
-      parser: "@typescript-eslint/parser",
-      plugins: ["@typescript-eslint"],
-      rules: {
-        "@typescript-eslint/no-inferrable-types": 0,
-        "comma-dangle": ["error", "always-multiline"],
-        indent: ["error", 2, { SwitchCase: 1 }],
-        "linebreak-style": ["error", "unix"],
-        quotes: ["error", "double"],
-        semi: ["error", "always"],
-      },
-    },
-    {
-      files: ["*.svelte"],
-      processor: "svelte3/svelte3",
-      plugins: ["svelte3", "@typescript-eslint"],
-    },
-  ],
-  ignorePatterns: ["*.cjs"],
-  settings: {
-    "svelte3/typescript": () => require("typescript"),
-  },
-  parserOptions: {
-    sourceType: "module",
-    ecmaVersion: 2019,
-  },
-  env: {
-    browser: true,
-    es2017: true,
-    node: true,
-  },
-};
+import eslint from '@eslint/js';
+import prettier from 'eslint-config-prettier';
+import svelte from 'eslint-plugin-svelte';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
+
+export default tseslint.config(
+	eslint.configs.recommended,
+	...tseslint.configs.recommended,
+	...svelte.configs['flat/recommended'],
+	prettier,
+	...svelte.configs['flat/prettier'],
+	{
+		languageOptions: {
+			globals: {
+				...globals.browser,
+				...globals.node
+			}
+		}
+	},
+	{
+		files: ['**/*.svelte'],
+		languageOptions: {
+			parserOptions: {
+				parser: tseslint.parser
+			}
+		}
+	},
+	{
+		ignores: ['build/', '.svelte-kit/', 'dist/']
+	}
+);

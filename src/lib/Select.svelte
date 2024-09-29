@@ -1,59 +1,69 @@
 <script lang="ts">
-  import { createEventDispatcher, onDestroy, onMount, tick } from "svelte";
-  import { convertLengthToPx, generateHtmlId } from "./_utils/dom-utils";
-  import stringUtils from "./_utils/string-utils";
-  import Chevron from "./Chevron.svelte";
-  import Cross from "./Cross.svelte";
-  import Dropdown, { DROPDOWN_CSS_CUSTOM_PROPERTIES } from "./Dropdown.svelte";
-  import Portal from "./Portal.svelte";
-  import Wrapper from "./Wrapper.svelte";
+  import { createEventDispatcher, onDestroy, onMount, tick } from 'svelte';
+  import { convertLengthToPx, generateHtmlId } from './_utils/dom-utils';
+  import stringUtils from './_utils/string-utils';
+  import Chevron from './Chevron.svelte';
+  import Cross from './Cross.svelte';
+  import Dropdown, { DROPDOWN_CSS_CUSTOM_PROPERTIES } from './Dropdown.svelte';
+  import Portal from './Portal.svelte';
+  import Wrapper from './Wrapper.svelte';
 
-  import type { DropdownDirection, Position, SelectOption } from "./types";
+  import type { DropdownDirection, Position, SelectOption } from './types';
 
-  export let appendTo: string = null;
-  export let direction: DropdownDirection = "auto";
+  export let appendTo: string | undefined = undefined;
+  export let direction: DropdownDirection = 'auto';
   export let disabled: boolean = false;
-  export let dropdownHeight: string = null;
+  export let dropdownHeight: string | undefined = undefined;
   export let htmlId: string = generateHtmlId();
-  export let itemHeight: string = "3rem";
+  export let itemHeight: string = '3rem';
   export let maxItems: number = 5;
   export let name: string | null | undefined = undefined;
-  export let optionKeyFn: (option: SelectOption) => unknown = (option) =>
-    option.label;
+  export let optionKeyFn: (option: SelectOption) => unknown = (option) => option.label;
   export let options: Array<SelectOption> = [];
-  export let placeholder: string = null;
-  export let searchFn: (query: string) => void = null;
+  export let placeholder: string | undefined = undefined;
+  export let searchFn: ((query: string) => void) | undefined = undefined;
   export let searchable: boolean = false;
   export let showChevron: boolean = true;
   export let showEmptyResults: boolean = true;
   export let value: unknown = undefined;
-  export let valueFormatterFn: (value: unknown) => string = null;
-  export let yOffset: string = "1rem";
+  export let valueFormatterFn: ((value: unknown) => string) | undefined = undefined;
+  export let yOffset: string = '1rem';
 
-  let container: HTMLElement = null;
+  let container: HTMLElement | null | undefined = undefined;
   let dropUp: boolean = false;
-  let dropdownComponent: Dropdown = null;
+  let dropdownComponent: Dropdown | undefined = undefined;
   let dropdownHeightPx: number = 0;
   let dropdownHtmlId: string = generateHtmlId();
   let expanded: boolean = false;
   let filteredOptions: Array<SelectOption> = [];
   let focused: boolean = false;
-  let formattedValue: string = "";
-  let highlightedOptionId: string = null;
-  let inputElement: HTMLInputElement = null;
+  let formattedValue: string = '';
+  let highlightedOptionId: string | undefined = undefined;
+  let inputElement: HTMLInputElement | undefined = undefined;
   let itemHeightPx: number = 0;
   let position: Position = { left: -99999, top: -99999 };
   let searching: boolean = false;
-  let selectorElement: HTMLElement = null;
+  let selectorElement: HTMLElement | undefined = undefined;
   let width: number = 0;
 
   $: filteredOptions = options;
   $: formattedValue = formatValue(value);
-  $: dropdownHeightPx =
-    selectorElement && convertLengthToPx(dropdownHeight, selectorElement);
-  $: itemHeightPx =
-    selectorElement && convertLengthToPx(itemHeight, selectorElement);
-  $: toggleDropdown(expanded);
+  $: {
+    if (dropdownHeight) {
+      dropdownHeightPx =
+        (selectorElement && convertLengthToPx(dropdownHeight, selectorElement)) || 0;
+    }
+  }
+  $: {
+    if (itemHeight) {
+      itemHeightPx = (selectorElement && convertLengthToPx(itemHeight, selectorElement)) || 0;
+    }
+  }
+  $: {
+    if (container && selectorElement) {
+      toggleDropdown(expanded);
+    }
+  }
 
   const dispatch = createEventDispatcher();
 
@@ -61,10 +71,10 @@
     if (expanded) {
       _asyncResetPosition();
 
-      container.addEventListener("scroll", handleScroll);
+      container?.addEventListener('scroll', handleScroll);
       inputElement?.focus();
     } else {
-      container?.removeEventListener("scroll", handleScroll);
+      container?.removeEventListener('scroll', handleScroll);
     }
   };
 
@@ -86,25 +96,25 @@
     if (!focused) return;
 
     switch (event.key) {
-      case "ArrowUp":
-      case "ArrowDown":
-      case "Enter": {
+      case 'ArrowUp':
+      case 'ArrowDown':
+      case 'Enter': {
         event.preventDefault();
         expanded = true;
         break;
       }
-      case "Backspace":
-      case "Delete": {
+      case 'Backspace':
+      case 'Delete': {
         if (!inputElement?.value) {
           _clearResults();
         }
         break;
       }
-      case "Tab": {
+      case 'Tab': {
         _resetSelect();
         break;
       }
-      case "Escape": {
+      case 'Escape': {
         expanded = false;
         break;
       }
@@ -119,15 +129,14 @@
     expanded = true;
     searching = true;
 
+    if (!inputElement) return;
+
     if (searchFn) {
       searchFn(inputElement.value);
       return;
     }
 
-    const searchRegexp = new RegExp(
-      stringUtils.escapeRegExp(inputElement.value) || "",
-      "i",
-    );
+    const searchRegexp = new RegExp(stringUtils.escapeRegExp(inputElement.value) || '', 'i');
     filteredOptions = options.filter((option) =>
       searchRegexp.test(stringUtils.removeAccents(option.label)),
     );
@@ -144,7 +153,7 @@
 
     _resetInput();
     inputElement?.focus();
-    dispatch("select", selectEvent.detail);
+    dispatch('select', selectEvent.detail);
   };
 
   const handleOutsideClick = () => {
@@ -152,17 +161,11 @@
   };
 
   const handleHighlight = (highlightEvent: CustomEvent<number>) => {
-    highlightedOptionId = expanded
-      ? `${dropdownHtmlId}-${highlightEvent.detail}`
-      : null;
+    highlightedOptionId = expanded ? `${dropdownHtmlId}-${highlightEvent.detail}` : undefined;
   };
 
   const checkAndHandleOutsideClick = (event: MouseEvent) => {
-    if (
-      !focused ||
-      selectorElement.contains(event.target as HTMLElement) ||
-      dropdownComponent
-    ) {
+    if (!focused || selectorElement?.contains(event.target as HTMLElement) || dropdownComponent) {
       return;
     }
 
@@ -173,16 +176,12 @@
     if (valueFormatterFn) {
       return valueFormatterFn(value);
     }
-    return (
-      options.find((option) => option.value === value)?.label ||
-      value?.toString() ||
-      ""
-    );
+    return options.find((option) => option.value === value)?.label || value?.toString() || '';
   };
 
-  const getDropdownWrapperStyle = () => {
+  const getDropdownWrapperStyle = (): string => {
     if (!appendTo || !selectorElement) {
-      return null;
+      return '';
     }
 
     // Yuck...
@@ -190,24 +189,22 @@
     // when it's appended to another container.
     // there may be a better way...
     const selectorStyle = getComputedStyle(selectorElement);
-    const dropdownCssCustomProperties = DROPDOWN_CSS_CUSTOM_PROPERTIES.map(
-      (property) => {
-        const propertyValue = selectorStyle.getPropertyValue(property);
-        return propertyValue && `${property}: ${propertyValue}`;
-      },
-    ).filter(Boolean);
+    const dropdownCssCustomProperties = DROPDOWN_CSS_CUSTOM_PROPERTIES.map((property) => {
+      const propertyValue = selectorStyle.getPropertyValue(property);
+      return propertyValue && `${property}: ${propertyValue}`;
+    }).filter(Boolean);
 
     if (!dropdownCssCustomProperties.length) {
-      return null;
+      return '';
     }
 
-    return ["display: contents", ...dropdownCssCustomProperties].join("; ");
+    return ['display: contents', ...dropdownCssCustomProperties].join('; ');
   };
 
   const _resetInput = () => {
-    if (inputElement != null) {
+    if (inputElement) {
       searching = false;
-      inputElement.value = "";
+      inputElement.value = '';
 
       filteredOptions = options;
     }
@@ -217,57 +214,57 @@
     value = undefined;
     _resetInput();
 
-    dispatch("clear");
+    dispatch('clear');
   };
 
   const _xPosition = (): Partial<Position> => {
+    if (!selectorElement) return {};
+
     const selectorRect = selectorElement.getBoundingClientRect();
     return {
       left: appendTo
         ? selectorRect.left
-        : -1 *
-          parseFloat(getComputedStyle(selectorElement).borderLeftWidth || "0"),
+        : -1 * parseFloat(getComputedStyle(selectorElement).borderLeftWidth || '0'),
     };
   };
 
   const _yPosition = (fixedDirection: boolean = false): Partial<Position> => {
+    if (!selectorElement) return {};
+
     const selectorRect = selectorElement.getBoundingClientRect();
     const yOffsetPx = convertLengthToPx(yOffset, selectorElement);
 
     if (!fixedDirection) {
-      if (direction === "auto") {
-        const scrollTop =
-          document.documentElement.scrollTop || document.body.scrollTop;
+      if (direction === 'auto') {
+        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
         const offsetTop = selectorRect.top + window.scrollY + yOffsetPx;
         const height = selectorRect.height;
-        const dropdownHeight = (
-          document.querySelector(".svelte-selectbox-dropdown") as HTMLElement
-        )?.offsetHeight;
+        const dropdownHeight = (document.querySelector('.svelte-selectbox-dropdown') as HTMLElement)
+          ?.offsetHeight;
 
         dropUp =
-          offsetTop + height + dropdownHeight >
-          scrollTop + document.documentElement.clientHeight;
+          offsetTop + height + dropdownHeight > scrollTop + document.documentElement.clientHeight;
       } else {
-        dropUp = direction === "up";
+        dropUp = direction === 'up';
       }
     }
 
-    const parentElement = appendTo
-      ? document.querySelector(appendTo)
-      : selectorElement;
+    const parentElement = appendTo ? document.querySelector(appendTo) : selectorElement;
+    if (!parentElement) return {};
+
     const parentRect = parentElement.getBoundingClientRect();
     if (dropUp) {
       const selectorBottom =
         parentRect.bottom -
         selectorRect.bottom -
-        parseFloat(getComputedStyle(selectorElement).borderTopWidth || "0");
+        parseFloat(getComputedStyle(selectorElement).borderTopWidth || '0');
       return { bottom: selectorBottom + selectorRect.height + yOffsetPx };
     }
 
     const selectorTop =
       selectorRect.top -
       parentRect.top -
-      parseFloat(getComputedStyle(selectorElement).borderTopWidth || "0");
+      parseFloat(getComputedStyle(selectorElement).borderTopWidth || '0');
     return { top: selectorTop + selectorRect.height + yOffsetPx };
   };
 
@@ -285,6 +282,8 @@
   };
 
   const _resetWidth = () => {
+    if (!selectorElement) return;
+
     const selectorRect = selectorElement.getBoundingClientRect();
     width = selectorRect.width;
   };
@@ -294,26 +293,23 @@
     focused = false;
     _resetInput();
 
-    dispatch("reset");
+    dispatch('reset');
   };
 
   const _detachDropdown = () => {
     dropdownComponent?.$destroy();
-    container?.removeEventListener("scroll", handleScroll);
+    container?.removeEventListener('scroll', handleScroll);
   };
 
   onMount(() => {
     _resetWidth();
-    container = appendTo ? document.querySelector(appendTo) : selectorElement;
+    container = appendTo ? document.querySelector<HTMLElement>(appendTo) : selectorElement;
   });
 
   onDestroy(_detachDropdown);
 </script>
 
-<svelte:window
-  on:mousedown={checkAndHandleOutsideClick}
-  on:resize={handleWindowResize}
-/>
+<svelte:window on:mousedown={checkAndHandleOutsideClick} on:resize={handleWindowResize} />
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
@@ -332,7 +328,7 @@
         <slot name="value" {formattedValue}>{formattedValue}</slot>
       {:else}
         <div class="svelte-selectbox-value-placeholder">
-          {placeholder || ""}
+          {placeholder || ''}
         </div>
       {/if}
     </div>
@@ -375,13 +371,13 @@
   {#if showChevron}
     <div class="svelte-selectbox-arrow" aria-hidden="true">
       <slot name="chevron-icon" {expanded}>
-        <Chevron direction={expanded ? "up" : "down"} />
+        <Chevron direction={expanded ? 'up' : 'down'} />
       </slot>
     </div>
   {/if}
 
   <svelte:component
-    this={(showEmptyResults || filteredOptions.length) && expanded && Portal}
+    this={((showEmptyResults || filteredOptions.length) && expanded && Portal) || undefined}
     {appendTo}
   >
     <Wrapper style={getDropdownWrapperStyle}>
@@ -403,9 +399,7 @@
         on:highlight={handleHighlight}
       >
         <slot name="item" slot="item" let:option {option}>{option.label}</slot>
-        <slot name="no-options-placeholder" slot="no-options-placeholder"
-          >No options found</slot
-        >
+        <slot name="no-options-placeholder" slot="no-options-placeholder">No options found</slot>
       </Dropdown>
     </Wrapper>
   </svelte:component>
@@ -433,43 +427,25 @@
     background-color: var(--background-color, #ffffff);
   }
   .svelte-selectbox:not(.disabled):not(.focused):hover {
-    background-color: var(
-      --background-color-hover,
-      var(--background-color, #ffffff)
-    );
+    background-color: var(--background-color-hover, var(--background-color, #ffffff));
     border: var(--border-hover, 1px solid #9ca3af); /* gray-400 */
     box-shadow: var(--box-shadow-hover, none);
   }
   .svelte-selectbox:not(.disabled):not(.focused):hover .svelte-selectbox-input {
-    background-color: var(
-      --background-color-hover,
-      var(--background-color, #ffffff)
-    );
+    background-color: var(--background-color-hover, var(--background-color, #ffffff));
   }
   .svelte-selectbox.focused {
     border: var(--border-focused, 1px solid #60a5fa); /* blue-400 */
     box-shadow: var(--box-shadow-focused, 0 0 4px 0 #60a5fa);
   }
   .svelte-selectbox.expanded {
-    border: var(
-      --border-expanded,
-      var(--border-focused, 1px solid #60a5fa)
-    ); /* blue-400 */
+    border: var(--border-expanded, var(--border-focused, 1px solid #60a5fa)); /* blue-400 */
     border-radius: var(--border-radius-expanded, var(--border-radius, 4px));
-    box-shadow: var(
-      --box-shadow-expanded,
-      var(--box-shadow-focused, 0 0 4px 0 #60a5fa)
-    );
+    box-shadow: var(--box-shadow-expanded, var(--box-shadow-focused, 0 0 4px 0 #60a5fa));
   }
   .svelte-selectbox.expanded.drop-up {
-    border-radius: var(
-      --border-radius-expanded-up,
-      var(--border-radius-expanded, 4px)
-    );
-    box-shadow: var(
-      --box-shadow-expanded-up,
-      var(--box-shadow-focused, 0 0 4px 0 #60a5fa)
-    );
+    border-radius: var(--border-radius-expanded-up, var(--border-radius-expanded, 4px));
+    box-shadow: var(--box-shadow-expanded-up, var(--box-shadow-focused, 0 0 4px 0 #60a5fa));
   }
   .svelte-selectbox input {
     border: 0;

@@ -1,32 +1,29 @@
 <script lang="ts" context="module">
   export const DROPDOWN_CSS_CUSTOM_PROPERTIES = [
-    "--border-radius",
-    "--dropdown-background-color",
-    "--dropdown-border-color",
-    "--dropdown-border-radius",
-    "--dropdown-border-radius-up",
-    "--dropdown-border-width",
-    "--dropdown-border-width-up",
-    "--dropdown-box-shadow",
-    "--dropdown-font-size",
-    "--dropdown-item-background-highlighted",
-    "--dropdown-item-border",
-    "--dropdown-item-color",
-    "--dropdown-item-color-highlighted",
-    "--dropdown-item-disabled-color",
-    "--dropdown-z-index",
-    "--font-size",
+    '--border-radius',
+    '--dropdown-background-color',
+    '--dropdown-border-color',
+    '--dropdown-border-radius',
+    '--dropdown-border-radius-up',
+    '--dropdown-border-width',
+    '--dropdown-border-width-up',
+    '--dropdown-box-shadow',
+    '--dropdown-font-size',
+    '--dropdown-item-background-highlighted',
+    '--dropdown-item-border',
+    '--dropdown-item-color',
+    '--dropdown-item-color-highlighted',
+    '--dropdown-item-disabled-color',
+    '--dropdown-z-index',
+    '--font-size',
   ];
 </script>
 
 <script lang="ts">
-  import { createEventDispatcher, onMount, tick } from "svelte";
-  import {
-    contentBoxHeightToBorderBoxHeight,
-    scrollToItem,
-  } from "./_utils/dom-utils";
+  import { createEventDispatcher, onMount, tick } from 'svelte';
+  import { contentBoxHeightToBorderBoxHeight, scrollToItem } from './_utils/dom-utils';
 
-  import type { Position, SelectOption } from "./types";
+  import type { Position, SelectOption } from './types';
 
   export let dropUp: boolean = false;
   export let dropdownHeightPx: number; // takes precedence over maxItems+itemHeightPx
@@ -40,20 +37,17 @@
   export let selectedValue: unknown = null;
   export let width: number;
 
-  let dropdownElement: HTMLElement = null;
-  let dropdownScrollArea: HTMLElement = null;
-  let dropdownStyle: string = "";
-  let dropdownScrollAreaStyle: string = "";
+  let dropdownElement: HTMLElement | undefined = undefined;
+  let dropdownScrollArea: HTMLElement | undefined = undefined;
+  let dropdownStyle: string = '';
+  let dropdownScrollAreaStyle: string = '';
   let height: number = 0;
   let highlightedIndex: number = 0;
   $: {
     if (dropdownScrollArea) {
       height =
         dropdownHeightPx ||
-        contentBoxHeightToBorderBoxHeight(
-          dropdownScrollArea,
-          maxItems * itemHeightPx,
-        );
+        contentBoxHeightToBorderBoxHeight(dropdownScrollArea, maxItems * itemHeightPx);
     }
   }
 
@@ -64,32 +58,29 @@
     dropdownScrollAreaStyle = `max-height: ${height}px`;
   }
   $: itemStyle = `height: ${itemHeightPx}px`;
-  $: selectedIndex = options.findIndex(
-    (option) => option.value === selectedValue,
-  );
+  $: selectedIndex = options.findIndex((option) => option.value === selectedValue);
   $: {
-    highlightedIndex =
-      selectedIndex === -1 ? _findNextEnabledOptionIndex(-1) : selectedIndex;
+    highlightedIndex = selectedIndex === -1 ? _findNextEnabledOptionIndex(-1) : selectedIndex;
   }
 
   const dispatch = createEventDispatcher();
 
-  const selectOption = (option: SelectOption) => dispatch("select", option);
+  const selectOption = (option: SelectOption) => dispatch('select', option);
   const handleOptionClick = (option: SelectOption) => selectOption(option);
 
   const handleKeydown = (event: KeyboardEvent) => {
     switch (event.key) {
-      case "ArrowUp": {
+      case 'ArrowUp': {
         highlightPrevious();
         event.preventDefault();
         break;
       }
-      case "ArrowDown": {
+      case 'ArrowDown': {
         highlightNext();
         event.preventDefault();
         break;
       }
-      case "Enter": {
+      case 'Enter': {
         selectHightlightedOption();
         event.preventDefault();
         break;
@@ -98,15 +89,16 @@
   };
 
   const highlightPrevious = () => {
+    if (!dropdownScrollArea) return;
+
     highlightOption(_findNextEnabledOptionIndex(highlightedIndex, true));
 
-    scrollToItem(
-      dropdownScrollArea.children[highlightedIndex] as HTMLElement,
-      dropdownScrollArea,
-    );
+    scrollToItem(dropdownScrollArea.children[highlightedIndex] as HTMLElement, dropdownScrollArea);
   };
 
   const highlightNext = () => {
+    if (!dropdownScrollArea) return;
+
     highlightOption(_findNextEnabledOptionIndex(highlightedIndex));
 
     scrollToItem(
@@ -118,16 +110,12 @@
 
   const highlightOption = (index: number) => {
     highlightedIndex = index;
-    dispatch("highlight", index);
+    dispatch('highlight', index);
   };
 
-  const selectHightlightedOption = () =>
-    selectOption(options[highlightedIndex]);
+  const selectHightlightedOption = () => selectOption(options[highlightedIndex]);
 
-  const _findNextEnabledOptionIndex = (
-    index: number,
-    previous: boolean = false,
-  ): number => {
+  const _findNextEnabledOptionIndex = (index: number, previous: boolean = false): number => {
     const enabledIndices = options
       .map((option, idx) => ({ option, idx }))
       .filter(({ option }) => !option.disabled)
@@ -145,40 +133,30 @@
     }
 
     if (previous) {
-      return pos === 0
-        ? enabledIndices[enabledIndices.length - 1]
-        : enabledIndices[pos - 1];
+      return pos === 0 ? enabledIndices[enabledIndices.length - 1] : enabledIndices[pos - 1];
     }
 
-    return pos === enabledIndices.length - 1
-      ? enabledIndices[0]
-      : enabledIndices[pos + 1];
+    return pos === enabledIndices.length - 1 ? enabledIndices[0] : enabledIndices[pos + 1];
   };
 
   const checkAndHandleOutsideClick = (event: MouseEvent) => {
     const eventTarget = event.target as HTMLElement;
-    if (
-      selectorElement.contains(eventTarget) ||
-      dropdownElement.contains(eventTarget)
-    ) {
+    if (selectorElement.contains(eventTarget) || dropdownElement?.contains(eventTarget)) {
       return;
     }
-    dispatch("outsideClick");
+    dispatch('outsideClick');
   };
 
   onMount(async () => {
     await tick();
-    scrollToItem(
-      dropdownScrollArea.children[selectedIndex] as HTMLElement,
-      dropdownScrollArea,
-    );
+
+    if (!dropdownScrollArea) return;
+
+    scrollToItem(dropdownScrollArea.children[selectedIndex] as HTMLElement, dropdownScrollArea);
   });
 </script>
 
-<svelte:window
-  on:mousedown={checkAndHandleOutsideClick}
-  on:keydown={handleKeydown}
-/>
+<svelte:window on:mousedown={checkAndHandleOutsideClick} on:keydown={handleKeydown} />
 
 <div
   bind:this={dropdownElement}
@@ -241,14 +219,8 @@
     box-sizing: border-box;
   }
   .svelte-selectbox-dropdown.drop-up {
-    border-width: var(
-      --dropdown-border-width-up,
-      var(--dropdown-border-width, 1px)
-    );
-    border-radius: var(
-      --dropdown-border-radius-up,
-      var(--dropdown-border-radius, 4px)
-    );
+    border-width: var(--dropdown-border-width-up, var(--dropdown-border-width, 1px));
+    border-radius: var(--dropdown-border-radius-up, var(--dropdown-border-radius, 4px));
   }
   .svelte-selectbox-dropdown-item {
     padding: 0 0.5rem 0 1rem;
@@ -272,17 +244,11 @@
   }
   .svelte-selectbox-dropdown-item.selected {
     color: var(--dropdown-item-color-selected, white);
-    background-color: var(
-      --dropdown-item-background-selected,
-      #1d4ed8
-    ); /* blue-700 */
+    background-color: var(--dropdown-item-background-selected, #1d4ed8); /* blue-700 */
   }
   .svelte-selectbox-dropdown-item.highlighted:not(.selected) {
     color: var(--dropdown-item-color-highlighted, #1f2937); /* gray-800 */
-    background-color: var(
-      --dropdown-item-background-highlighted,
-      #bfdbfe
-    ); /* blue-200 */
+    background-color: var(--dropdown-item-background-highlighted, #bfdbfe); /* blue-200 */
   }
   .svelte-selectbox-scroll-area {
     overflow-y: auto;

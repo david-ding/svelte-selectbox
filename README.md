@@ -7,13 +7,19 @@ A simple selectbox library with custom dropdown placements. [Demos](https://svel
 npm
 
 ```
-npm i --save svelte-selectbox
+npm i -D svelte-selectbox
 ```
 
 yarn
 
 ```
-yarn add svelte-selectbox
+yarn add -D svelte-selectbox
+```
+
+pnpm
+
+```
+pnpm add -D svelte-selectbox
 ```
 
 # Usage

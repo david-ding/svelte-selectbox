@@ -1,6 +1,6 @@
 {
   "hooks": {
-    "after:bump": "yarn package"
+    "after:bump": "pnpm package"
   },
   "github": {
     "release": true

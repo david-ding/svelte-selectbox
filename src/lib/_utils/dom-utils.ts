@@ -1,8 +1,4 @@
-const isInScrollView = (
-  element: HTMLElement,
-  parent: HTMLElement,
-  partial?: boolean,
-): boolean => {
+const isInScrollView = (element: HTMLElement, parent: HTMLElement, partial?: boolean): boolean => {
   if (!parent.contains(element)) {
     return false;
   }
@@ -10,17 +6,12 @@ const isInScrollView = (
   if (partial) {
     const lowerBoundary = parent.scrollTop + parent.clientHeight;
     const upperBoundary = parent.scrollTop - element.clientHeight;
-    return (
-      element.offsetTop <= lowerBoundary && element.offsetTop >= upperBoundary
-    );
+    return element.offsetTop <= lowerBoundary && element.offsetTop >= upperBoundary;
   }
 
-  const lowerBoundary =
-    parent.scrollTop + parent.clientHeight - element.clientHeight;
+  const lowerBoundary = parent.scrollTop + parent.clientHeight - element.clientHeight;
   const upperBoundary = parent.scrollTop;
-  return (
-    element.offsetTop <= lowerBoundary && element.offsetTop >= upperBoundary
-  );
+  return element.offsetTop <= lowerBoundary && element.offsetTop >= upperBoundary;
 };
 
 export const scrollToItem = (
@@ -38,42 +29,44 @@ export const scrollToItem = (
 };
 
 const convertRemToPx = (rem: number): number => {
-  const fontSize =
-    parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+  const fontSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
   return rem * fontSize;
 };
 
-const convertEmToPx = (em: number, element: HTMLElement): number => {
+const convertEmToPx = (em: number, element: HTMLElement | undefined): number => {
   if (!element) {
-    throw new Error("element is not specified");
+    throw new Error('element is not specified');
   }
 
-  const fontSize =
-    parseFloat(getComputedStyle(element.parentElement).fontSize) || 16;
+  if (!element.parentElement) {
+    throw new Error('element does not have a parent element');
+  }
+
+  const fontSize = parseFloat(getComputedStyle(element.parentElement).fontSize) || 16;
   return em * fontSize;
 };
 
-export const convertLengthToPx = (
-  length: string,
-  parent?: HTMLElement,
-): number => {
+export const convertLengthToPx = (length: string, parent?: HTMLElement): number => {
   if (!length) return 0;
 
   const matches = /^(-?[\d.]+)(px|(r)?em)$/.exec(length);
   if (!matches) {
-    throw new Error("Invalid length: " + length);
+    throw new Error('Invalid length: ' + length);
   }
 
   const [, value, unit] = matches;
   switch (unit) {
-    case "rem": {
+    case 'rem': {
       return convertRemToPx(parseFloat(value));
     }
-    case "em": {
+    case 'em': {
       return convertEmToPx(parseFloat(value), parent);
     }
-    case "px": {
+    case 'px': {
       return parseFloat(value);
+    }
+    default: {
+      throw new Error('Invalid unit: ' + unit);
     }
   }
 };
@@ -93,10 +86,10 @@ export const contentBoxHeightToBorderBoxHeight = (
   // });
   return (
     contentBoxHeight +
-    parseFloat(borderTopWidth || "0") +
-    parseFloat(borderBottomWidth || "0") +
-    parseFloat(paddingTop || "0") +
-    parseFloat(paddingBottom || "0")
+    parseFloat(borderTopWidth || '0') +
+    parseFloat(borderBottomWidth || '0') +
+    parseFloat(paddingTop || '0') +
+    parseFloat(paddingBottom || '0')
   );
 };
 
